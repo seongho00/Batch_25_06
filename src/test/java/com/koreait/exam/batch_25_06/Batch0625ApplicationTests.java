@@ -1,4 +1,4 @@
-package com.koreait.exam.batch_06_25;
+package com.koreait.exam.batch_25_06;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
