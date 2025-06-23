@@ -6,7 +6,9 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.configuration.annotation.JobBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.JobScope;
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -27,23 +29,46 @@ public class HelloWorldConfig {
 
     @Bean
     public Job helloWordJob() {
-        return jobBuilderFactory.get("helloWorldJob")
+        return jobBuilderFactory
+                .get("helloWorldJob")
                 .incrementer(new RunIdIncrementer())
                 .start(helloWorldStep1())
+                .next(helloWorldStep2())
                 .build();
     }
 
     @Bean
+    @JobScope
     public Step helloWorldStep1() {
-        return stepBuilderFactory.get("helloWorldStep1")
-                .tasklet(helloWordTasklet())
+        return stepBuilderFactory
+                .get("helloWorldStep1")
+                .tasklet(helloWordTasklet1())
                 .build();
     }
 
     @Bean
-    public Tasklet helloWordTasklet() {
+    @StepScope
+    public Tasklet helloWordTasklet1() {
         return (contribution, chunkContext) -> {
-            System.out.println("헬로월드!");
+            System.out.println("헬로월드!1111");
+            return RepeatStatus.FINISHED;
+        };
+    }
+
+    @Bean
+    @JobScope
+    public Step helloWorldStep2() {
+        return stepBuilderFactory
+                .get("helloWorldStep1")
+                .tasklet(helloWordTasklet2())
+                .build();
+    }
+
+    @Bean
+    @StepScope
+    public Tasklet helloWordTasklet2() {
+        return (contribution, chunkContext) -> {
+            System.out.println("헬로월드!22222");
             return RepeatStatus.FINISHED;
         };
     }
