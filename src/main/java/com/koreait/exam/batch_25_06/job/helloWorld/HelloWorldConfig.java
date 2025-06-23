@@ -69,6 +69,13 @@ public class HelloWorldConfig {
     public Tasklet helloWordTasklet2() {
         return (contribution, chunkContext) -> {
             System.out.println("헬로월드!22222");
+
+//            throw new Exception(); return 값이 실행될리가 없어 오류 발생
+
+            if (true) {
+                throw new Exception("실패 : 의도적인 실패");
+            }
+
             return RepeatStatus.FINISHED;
         };
     }
