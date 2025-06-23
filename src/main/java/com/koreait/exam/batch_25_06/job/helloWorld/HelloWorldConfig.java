@@ -31,8 +31,8 @@ public class HelloWorldConfig {
     public Job helloWordJob() {
         return jobBuilderFactory
                 .get("helloWorldJob")
-                .incrementer(new RunIdIncrementer())
-                .start(helloWorldStep1())
+//                .incrementer(new RunIdIncrementer()) // 매번 새로운 아이디 부여 -> 모든 시도가 다 다르게 들어감
+                .start(helloWorldStep1()) 
                 .next(helloWorldStep2())
                 .build();
     }
