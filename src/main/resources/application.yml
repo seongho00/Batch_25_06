@@ -3,7 +3,7 @@ server:
 spring:
   batch:
     job:
-      names: ${job.name:helloWorldJob}
+      names: ${job.name:NONE}
     jdbc:
       initialize-schema: always
   datasource:
