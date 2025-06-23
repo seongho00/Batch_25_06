@@ -72,9 +72,9 @@ public class HelloWorldJobConfig {
 
 //            throw new Exception(); return 값이 실행될리가 없어 오류 발생
 
-            if (true) {
-                throw new Exception("실패 : 의도적인 실패");
-            }
+//            if (true) {
+//                throw new Exception("실패 : 의도적인 실패");
+//            }
 
             return RepeatStatus.FINISHED;
         };
