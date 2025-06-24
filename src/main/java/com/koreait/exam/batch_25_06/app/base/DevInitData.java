@@ -1,7 +1,9 @@
 package com.koreait.exam.batch_25_06.app.base;
 
 import com.koreait.exam.batch_25_06.app.entity.Member;
+import com.koreait.exam.batch_25_06.app.entity.Product;
 import com.koreait.exam.batch_25_06.app.entity.ProductOption;
+import com.koreait.exam.batch_25_06.app.service.CartService;
 import com.koreait.exam.batch_25_06.app.service.MemberService;
 import com.koreait.exam.batch_25_06.app.service.ProductService;
 import org.springframework.boot.CommandLineRunner;
@@ -16,7 +18,7 @@ import java.util.Arrays;
 public class DevInitData {
 
     @Bean
-    public CommandLineRunner initData(MemberService memberService, ProductService productService) {
+    public CommandLineRunner initData(MemberService memberService, ProductService productService, CartService cartService) {
         return args -> {
             String password = "{noop}1234";
             Member member1 = memberService.join("user1", password, "user1@test.com");
@@ -25,7 +27,7 @@ public class DevInitData {
             Member member4 = memberService.join("user4", password, "user4@test.com");
 
 
-            productService.create("반팔 1", 55000, "DDM-1",
+            Product product1 = productService.create("반팔 1", 55000, "DDM-1",
                     Arrays.asList(
                             new ProductOption("RED", "95"),
                             new ProductOption("RED", "100"),
@@ -33,7 +35,7 @@ public class DevInitData {
                             new ProductOption("BLUE", "100")
                     )
             );
-            productService.create("셔츠 1", 66000, "DDM-2",
+            Product product2 = productService.create("셔츠 1", 66000, "DDM-2",
                     Arrays.asList(
                             new ProductOption("WHITE", "95"),
                             new ProductOption("WHITE", "100"),
@@ -41,6 +43,16 @@ public class DevInitData {
                             new ProductOption("BLACK", "100")
                     )
             );
+
+
+            ProductOption productOption__RED_95 = product1.getProductOptions().get(0);
+            ProductOption productOption__BLUE_95 = product1.getProductOptions().get(2);
+
+            cartService.addItem(member1, productOption__RED_95, 1); // 회원1이 productOption__RED_95 1개 추가 / 총 수량 : 1
+            cartService.addItem(member1, productOption__RED_95, 2); // 회원1이 productOption__RED_95 2개 추가 / 총 수량 : 3
+            cartService.addItem(member1, productOption__BLUE_95, 1); // 회원1이 productOption__BLUE_95 1개 추가 / 총 수량 : 1
+
+
         };
     }
 
