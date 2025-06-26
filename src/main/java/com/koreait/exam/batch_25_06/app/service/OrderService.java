@@ -1,7 +1,6 @@
 package com.koreait.exam.batch_25_06.app.service;
 
 import com.koreait.exam.batch_25_06.app.entity.*;
-import com.koreait.exam.batch_25_06.app.repository.MemberRepository;
 import com.koreait.exam.batch_25_06.app.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ public class OrderService {
 
     private final CartService cartService;
     private final OrderRepository orderRepository;
+    private final MemberService memberService;
 
     @Transactional
     public Order createFromCart(Member member) {
@@ -54,5 +54,33 @@ public class OrderService {
         orderRepository.save(order);
 
         return order;
+    }
+
+    @Transactional
+    public void payByRestCashOnly(Order order) {
+        Member orderer = order.getMember();
+
+        long restCash = orderer.getRestCash();
+
+        int payPrice = order.calculatePayPrice();
+
+        if(payPrice > restCash) {
+            throw new RuntimeException("예치금이 부족해");
+        }
+
+        memberService.addCash(orderer,payPrice * -1,"주문결제_예치금");
+
+        order.setPaymentDone();
+
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void refund(Order order) {
+        int payPrice = order.getPayPrice();
+        memberService.addCash(order.getMember(),payPrice,"주문환불_예치금");
+
+        order.setRefundDone();
+        orderRepository.save(order);
     }
 }
